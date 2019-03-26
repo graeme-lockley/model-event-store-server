@@ -1,0 +1,114 @@
+openapi: 3.0.1
+info:
+  title: Event Stream API
+  description: |
+    This API describes a set of services over a simple event stream.  The characteristics that make this event stream simple are:
+    * The stream does not support topics so all events are collected and exposed through a single topic
+    * This implementation does not support any aggregrate roots.  Therefore, should a consumer wish to filter, then the filter will need to be applied on the consumer's side rather than on the server's side.
+    * The event content is not defined other than being an arbitrary string.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api
+tags:
+  - name: events
+paths:
+  /events:
+    get:
+      tags:
+        - events
+      summary: Sequence of all events in the order
+      operationId: getEvents
+      parameters:
+        - name: start
+          in: query
+          schema:
+            type: integer
+            format: int32
+          description: An optional value denoting the start of the events to be retrieved.  Note that the first event returned id will be the next event immediately following this ID.
+        - name: pagesize
+          in: query
+          schema:
+            type: integer
+            format: int32
+            default: 100
+          description: Used for pagination.  A server might choose to place an upper bound on this value.
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventBean'
+    post:
+      tags:
+        - events
+      summary: Append a new event to the event stream
+      operationId: saveEvent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewEventBean'
+        required: false
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventBean'
+  /events/{id}:
+    get:
+      tags:
+        - events
+      summary: Detail associated with a specific event
+      operationId: getEvent
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        default:
+          description: successful operation
+          content: {}
+        "412":
+          description: no event associated with the passed ID
+          content: {}
+
+components:
+  schemas:
+    EventBean:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: |
+            A strictly increasing value denoting the sequence of events.  No assumptions can be made regarding this value other than:
+            * There might be holes in the sequence
+            * The sequence is not defined to start with a specific value
+            This value is automatically asigned when the event is added to the stream.
+        when:
+          type: string
+          format: date-time
+          description: The date/time when this event was created.  Note that this value is automatically assigned when the event is added to the stream.
+        name:
+          type: string
+          description: The event's name
+        content:
+          type: string
+          description: The content can be anything.  Note though that, as an event is JSON, the value of content will be marked up to avoid clashing with the JSON structure.
+    NewEventBean:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The event's name
+        content:
+          type: string
+          description: The content can be anything - JSON, XML or anything that is relevant

@@ -1,0 +1,15 @@
+- new-handler: za.co.no9.jfixture.JDBCHandler
+
+- jdbc-connect:
+    driver: org.h2.Driver
+    url: 'jdbc:h2:mem:'
+    username: sa
+    autoclose: false
+
+- jdbc-create-table:
+    name: event
+    fields:
+      id: 'bigint not null primary key auto_increment'
+      when: 'timestamp not null'
+      name: 'varchar(20) not null'
+      content: 'text not null'

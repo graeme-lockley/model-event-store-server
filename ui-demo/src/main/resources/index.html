@@ -1,0 +1,156 @@
+<html>
+<head>
+    <title>UI Demo</title>
+
+    <script type="text/javascript">
+        var myWebSocket;
+
+        var total = 0;
+
+        function element(id) {
+            return document.getElementById(id);
+        }
+
+        function updateStatus(status) {
+            element("status-startup").innerHTML = status;
+            element("status-reset").innerHTML = status;
+            element("status-running").innerHTML = status;
+        }
+
+
+        function connectToWS() {
+            var endpoint =
+                element("endpoint").value;
+
+            if (myWebSocket !== undefined) {
+                updateStatus("Disconnecting");
+                myWebSocket.close();
+            }
+
+            updateStatus("Connecting");
+
+            myWebSocket =
+                new WebSocket(endpoint);
+
+            myWebSocket.onmessage = function (event) {
+                console.log("Received: " + event.data);
+
+                total += 1;
+                element("total").innerHTML = total;
+
+                var msg =
+                    JSON.parse(event.data);
+
+                element("lastID").innerHTML = msg.id;
+            };
+
+            myWebSocket.onopen = function (evt) {
+                updateStatus("Open");
+            };
+
+            myWebSocket.onclose = function (evt) {
+                updateStatus("Closed");
+            };
+
+            myWebSocket.onerror = function (evt) {
+                updateStatus("Error: " + JSON.stringify(evt));
+            };
+
+            element("state-startup").style.display = "none";
+            element("state-reset").style.display = "block";
+            element("state-running").style.display = "none";
+        }
+
+        function resetSequence() {
+            updateStatus("Live");
+            myWebSocket.send(element("fromID").value);
+
+            element("state-startup").style.display = "none";
+            element("state-reset").style.display = "none";
+            element("state-running").style.display = "block";
+        }
+
+        function closeConn() {
+            updateStatus("Disconnecting");
+            myWebSocket.close();
+
+            element("state-startup").style.display = "block";
+            element("state-reset").style.display = "none";
+            element("state-running").style.display = "none";
+        }
+    </script>
+</head>
+<body>
+
+<div id="state-startup" style="display: block">
+    <table>
+        <tr>
+            <td>Status</td>
+            <td id="status-startup">Disconnected</td>
+        </tr>
+        <tr>
+            <td>Connection:</td>
+            <td>
+                <input type="text" id="endpoint" name="endpoint" value="ws://localhost:8080/websocket/events"
+                       style="width: 600px"><br></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>
+                <input type="button" onclick="connectToWS()" value="Connect"/><br><br>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="state-reset" style="display: none">
+    <table>
+        <tr>
+            <td>Status</td>
+            <td id="status-reset">Disconnected</td>
+        </tr>
+        <tr>
+            <td>From ID:</td>
+            <td>
+                <input type="text" id="fromID" name="fromID" value=""
+                       style="width: 600px"><br></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>
+                <input type="button" onclick="resetSequence()" value="Reset Sequence"/>
+                <input type="button" onclick="closeConn()" value="Disconnect"/>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="state-running" style="display: none">
+    <table>
+        <tr>
+            <td>Status</td>
+            <td id="status-running">Disconnected</td>
+        </tr>
+        <tr>
+            <td>Total Processed</td>
+            <td>
+                <div id="total"></div>
+            </td>
+        </tr>
+        <tr>
+            <td>Last ID</td>
+            <td>
+                <div id="lastID"></div>
+            </td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>
+                <input type="button" onclick="closeConn()" value="Disconnect"/>
+            </td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>
