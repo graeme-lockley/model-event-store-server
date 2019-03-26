@@ -1,2 +1,2 @@
-# Simple Event Source Server
+# Model Event Source Server
 
