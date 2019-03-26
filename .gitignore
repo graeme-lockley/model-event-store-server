@@ -1,0 +1,7 @@
+.idea
+*.iml
+
+.ci-status
+ci-pipeline/logs/
+
+target/
