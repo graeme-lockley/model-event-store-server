@@ -29,17 +29,17 @@
         <jfixtures.version>1.5</jfixtures.version>
         <junit.platform.launcher.version>1.4.0</junit.platform.launcher.version>
         <junit.version>5.4.0</junit.version>
+        <kotlin.test.version>3.1.11</kotlin.test.version> <!-- 3.1.11 -->
         <slf4j.version>1.7.25</slf4j.version>
         <swagger.jerysey2.version>1.5.22</swagger.jerysey2.version>
+        <kotlin.version>1.3.21</kotlin.version>
     </properties>
 
     <modules>
         <module>domain</module>
         <module>inmemory-repository</module>
-        <module>jersey-api</module>
         <module>javalin-api</module>
         <module>h2-repository</module>
-        <module>h2-jersey-application</module>
         <module>h2-javalin-application</module>
         <module>ui-demo</module>
     </modules>
@@ -63,6 +63,17 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib-jdk8</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.kotlintest</groupId>
+            <artifactId>kotlintest-runner-junit5</artifactId>
+            <version>${kotlin.test.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -79,6 +90,40 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <version>${kotlin.version}</version>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirs>
+                                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
+                            </sourceDirs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>test-compile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirs>
+                                <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
+                            </sourceDirs>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jvmTarget>1.8</jvmTarget>
+                </configuration>
             </plugin>
         </plugins>
     </build>
