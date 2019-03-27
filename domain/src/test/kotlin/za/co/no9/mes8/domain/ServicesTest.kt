@@ -6,10 +6,10 @@ import io.kotlintest.specs.StringSpec
 
 
 class ServicesTest : StringSpec() {
-    val repository =
+    private val repository =
             TestRepository()
 
-    val services =
+    private val services =
             Services(repository)
 
 
