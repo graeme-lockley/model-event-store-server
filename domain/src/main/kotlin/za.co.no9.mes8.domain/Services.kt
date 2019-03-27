@@ -1,6 +1,17 @@
 package za.co.no9.mes8.domain
 
+import za.co.no9.mes8.domain.ports.Repository
 
-fun main(args: Array<String>) {
-    println("Hello World")
+
+class Services(val repository: Repository) {
+    fun events(from: Int? = null, pageSize: Int = 100): Sequence<Event> =
+            repository.newUnitOfWork().events(from, pageSize)
+
+
+    fun event(id: Int): Event? =
+            repository.newUnitOfWork().event(id)
+
+
+    fun saveEvent(eventName: String, content: String): Event =
+            repository.newUnitOfWork().saveEvent(eventName, content)
 }
