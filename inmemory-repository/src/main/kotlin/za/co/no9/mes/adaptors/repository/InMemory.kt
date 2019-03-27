@@ -1,9 +1,9 @@
 package za.co.no9.mes.adaptors.repository
 
-import za.co.no9.mes8.domain.Event
-import za.co.no9.mes8.domain.Observer
-import za.co.no9.mes8.domain.ports.Repository
-import za.co.no9.mes8.domain.ports.UnitOfWork
+import za.co.no9.mes.domain.Event
+import za.co.no9.mes.domain.Observer
+import za.co.no9.mes.domain.ports.Repository
+import za.co.no9.mes.domain.ports.UnitOfWork
 import java.time.Instant
 import java.util.*
 

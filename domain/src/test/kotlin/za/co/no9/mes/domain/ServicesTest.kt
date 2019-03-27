@@ -1,4 +1,4 @@
-package za.co.no9.mes8.domain
+package za.co.no9.mes.domain
 
 import io.kotlintest.Description
 import io.kotlintest.shouldBe

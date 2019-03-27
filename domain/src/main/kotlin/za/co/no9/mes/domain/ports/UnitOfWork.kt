@@ -1,6 +1,6 @@
-package za.co.no9.mes8.domain.ports
+package za.co.no9.mes.domain.ports
 
-import za.co.no9.mes8.domain.Event
+import za.co.no9.mes.domain.Event
 
 
 interface UnitOfWork {

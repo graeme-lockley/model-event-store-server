@@ -1,6 +1,6 @@
-package za.co.no9.mes8.domain
+package za.co.no9.mes.domain
 
-import za.co.no9.mes8.domain.ports.Repository
+import za.co.no9.mes.domain.ports.Repository
 
 
 class Services(val repository: Repository) {
