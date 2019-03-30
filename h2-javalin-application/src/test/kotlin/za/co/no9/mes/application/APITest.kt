@@ -6,7 +6,7 @@ import io.kotlintest.TestResult
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import org.apache.http.client.fluent.Request
-import za.co.no9.ses8.adaptors.api.javalin.EventBean
+import za.co.no9.mes.adaptors.api.javalin.EventBean
 
 
 class APITest : StringSpec({

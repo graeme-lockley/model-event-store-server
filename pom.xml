@@ -19,19 +19,13 @@
         <apache.http.client.version>4.5.7</apache.http.client.version>
         <gson.version>2.8.5</gson.version>
         <h2.database.version>1.4.199</h2.database.version>
-        <java.activation.version>1.1.1</java.activation.version>
-        <jaxb.version>2.3.0</jaxb.version>
-        <jaxb.core.version>2.3.0.1</jaxb.core.version>
-        <jaxb.impl.version>2.3.2</jaxb.impl.version>
         <jdbi.version>3.6.0</jdbi.version>
         <javalin.version>2.7.0</javalin.version>
-        <jersey.version>2.28</jersey.version>
         <jfixtures.version>1.5</jfixtures.version>
         <junit.platform.launcher.version>1.4.0</junit.platform.launcher.version>
         <junit.version>5.4.0</junit.version>
         <kotlin.test.version>3.1.11</kotlin.test.version> <!-- 3.1.11 -->
         <slf4j.version>1.7.25</slf4j.version>
-        <swagger.jerysey2.version>1.5.22</swagger.jerysey2.version>
         <kotlin.version>1.3.21</kotlin.version>
     </properties>
 

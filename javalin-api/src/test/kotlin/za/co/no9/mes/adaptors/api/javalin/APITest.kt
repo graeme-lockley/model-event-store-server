@@ -9,8 +9,6 @@ import org.apache.http.client.fluent.Request
 import org.apache.http.entity.ContentType
 import za.co.no9.mes.adaptors.repository.InMemory
 import za.co.no9.mes.domain.Services
-import za.co.no9.ses8.adaptors.api.javalin.EventBean
-import za.co.no9.ses8.adaptors.api.javalin.NewEventBean
 
 
 private val gson =
