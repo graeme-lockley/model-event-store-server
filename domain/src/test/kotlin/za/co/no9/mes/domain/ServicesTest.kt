@@ -24,7 +24,7 @@ class ServicesTest : StringSpec() {
         }
 
 
-        "events over a non-empty steam with a page size" {
+        "events over a non-empty stream with a page size" {
             val events =
                     services.events(pageSize = 2).toList()
 
@@ -38,7 +38,7 @@ class ServicesTest : StringSpec() {
         }
 
 
-        "events over a non-empty steam with a from and page size" {
+        "events over a non-empty stream with a from and page size" {
             val events =
                     services.events(from = 1, pageSize = 2).toList()
 
@@ -95,6 +95,26 @@ class ServicesTest : StringSpec() {
 
             services.topic(topic1.id) shouldBe topic1
         }
+
+        "topics without from" {
+            val topics =
+                    services.topics(pageSize = 2).toList()
+
+            topics.size shouldBe 2
+
+            topics[0].name shouldBe "Topic 1"
+            topics[1].name shouldBe "Topic 2"
+        }
+
+        "topics with from" {
+            val topics =
+                    services.topics(from = 5, pageSize = 2).toList()
+
+            topics.size shouldBe 2
+
+            topics[0].name shouldBe "Topic 2"
+            topics[1].name shouldBe "Topic 3"
+        }
     }
 
 
@@ -108,6 +128,10 @@ class ServicesTest : StringSpec() {
         services.saveEvent("CustomerAdded", customerAddedEvent("Han Solo"))
         services.saveEvent("CustomerAdded", customerAddedEvent("Ben Solo"))
         services.saveEvent("CustomerAdded", customerAddedEvent("Leia Organa"))
+
+        services.saveTopic("Topic 1")
+        services.saveTopic("Topic 2")
+        services.saveTopic("Topic 3")
     }
 }
 

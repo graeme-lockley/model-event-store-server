@@ -55,15 +55,6 @@ class H2UnitOfWork(private val jdbi: Jdbi) : za.co.no9.mes.domain.ports.UnitOfWo
             }
 
 
-    override fun topic(id: Int): Topic? =
-            jdbi.withHandle<Topic?, RuntimeException> { handle ->
-                handle.select("select id, name from topic where id = ?", id)
-                        .map { rs, _ -> Topic(rs.getInt("id"), rs.getString("name")) }
-                        .findFirst()
-                        .orElse(null)
-            }
-
-
     override fun saveTopic(topicName: String): Topic =
             jdbi.withHandle<Topic, RuntimeException> { handle ->
                 handle.execute("insert into topic (name) values (?)", topicName)
@@ -73,4 +64,30 @@ class H2UnitOfWork(private val jdbi: Jdbi) : za.co.no9.mes.domain.ports.UnitOfWo
                         .map { rs, _ -> Topic(rs.getInt("id"), rs.getString("name")) }
                         .findOnly()
             }
+
+
+    override fun topic(id: Int): Topic? =
+            jdbi.withHandle<Topic?, RuntimeException> { handle ->
+                handle.select("select id, name from topic where id = ?", id)
+                        .map { rs, _ -> Topic(rs.getInt("id"), rs.getString("name")) }
+                        .findFirst()
+                        .orElse(null)
+            }
+
+
+    override fun topics(from: Int?, pageSize: Int): Sequence<Topic> =
+            if (from == null) {
+                jdbi.withHandle<List<Topic>, RuntimeException> { handle ->
+                    handle.select("select id, name from topic order by id limit ?", pageSize)
+                            .map { rs, _ -> Topic(rs.getInt("id"), rs.getString("name")) }
+                            .list()
+                }
+
+            } else {
+                jdbi.withHandle<List<Topic>, RuntimeException> { handle ->
+                    handle.select("select id, name from topic where id > ? order by id limit ?", from, pageSize)
+                            .map { rs, _ -> Topic(rs.getInt("id"), rs.getString("name")) }
+                            .list()
+                }
+            }.asSequence()
 }

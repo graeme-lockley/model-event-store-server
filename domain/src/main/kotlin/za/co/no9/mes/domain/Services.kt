@@ -20,6 +20,10 @@ class Services(val repository: Repository) {
             repository.newUnitOfWork().topic(id)
 
 
+    fun topics(from: Int? = null, pageSize: Int = 100): Sequence<Topic> =
+            repository.newUnitOfWork().topics(from, pageSize)
+
+
     fun saveTopic(topicName: String): Topic =
             repository.newUnitOfWork().saveTopic(topicName)
 

@@ -31,6 +31,24 @@ class APITest : StringSpec() {
 
 
     init {
+        "save event" {
+            val content =
+                    CustomerAdded("Luke Skywalker").toString()
+
+            val input =
+                    NewEvent("CharacterAdded", content)
+
+            val response =
+                    post("events", input)
+
+            val eventBean =
+                    gson.fromJson(response, Event::class.java)
+
+            eventBean.name shouldBe "CharacterAdded"
+            eventBean.content shouldBe content
+        }
+
+
         "known event" {
             val response =
                     Request.Get(BASE_URI + "events/2").execute().returnContent().asString()
@@ -112,21 +130,17 @@ class APITest : StringSpec() {
         }
 
 
-        "save event" {
-            val content =
-                    CustomerAdded("Luke Skywalker").toString()
-
+        "save topic" {
             val input =
-                    NewEvent("CharacterAdded", content)
+                    NewTopic("*default*")
 
             val response =
-                    post("events", input)
+                    post("topics", input)
 
-            val eventBean =
-                    gson.fromJson(response, Event::class.java)
+            val topicBean =
+                    gson.fromJson(response, Topic::class.java)
 
-            eventBean.name shouldBe "CharacterAdded"
-            eventBean.content shouldBe content
+            topicBean.name shouldBe "*default*"
         }
 
 
@@ -152,17 +166,39 @@ class APITest : StringSpec() {
         }
 
 
-        "save topic" {
-            val input =
-                    NewTopic("*default*")
-
+        "topics without from" {
             val response =
-                    post("topics", input)
+                    Request.Get(BASE_URI + "topics").execute().returnContent().asString()
 
-            val topicBean =
-                    gson.fromJson(response, Topic::class.java)
+            val events =
+                    toTopicsList(response)
 
-            topicBean.name shouldBe "*default*"
+            events.size shouldBe 3
+        }
+
+
+        "topics with from" {
+            val response =
+                    Request.Get(BASE_URI + "topics?start=5").execute().returnContent().asString()
+
+            val topics =
+                    toTopicsList(response)
+
+            topics.size shouldBe 2
+            topics[0].name shouldBe "Topic 2"
+            topics[1].name shouldBe "Topic 3"
+        }
+
+
+        "topics with pagesize" {
+            val response =
+                    Request.Get(BASE_URI + "topics?start=5&pagesize=1").execute().returnContent().asString()
+
+            val topics =
+                    toTopicsList(response)
+
+            topics.size shouldBe 1
+            topics[0].name shouldBe "Topic 2"
         }
     }
 
@@ -186,6 +222,11 @@ class APITest : StringSpec() {
         services.saveEvent("CustomerAdded", customerAddedEvent("Han Solo"))
         services.saveEvent("CustomerAdded", customerAddedEvent("Ben Solo"))
         services.saveEvent("CustomerAdded", customerAddedEvent("Leia Organa"))
+
+
+        services.saveTopic("Topic 1")
+        services.saveTopic("Topic 2")
+        services.saveTopic("Topic 3")
     }
 
 
@@ -202,6 +243,14 @@ fun toEventBeanList(response: String): List<Event>? {
     }.type
 
     return gson.fromJson<List<Event>>(response, listType)
+}
+
+
+fun toTopicsList(response: String): List<Topic> {
+    val listType = object : TypeToken<ArrayList<Topic>>() {
+    }.type
+
+    return gson.fromJson<List<Topic>>(response, listType)!!
 }
 
 

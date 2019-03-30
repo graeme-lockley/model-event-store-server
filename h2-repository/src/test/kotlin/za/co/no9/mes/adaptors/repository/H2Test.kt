@@ -86,6 +86,28 @@ class H2Test : StringSpec() {
             topic1.name shouldBe "*default*"
             unitOfWork.topic(topic1.id) shouldBe topic1
         }
+
+
+        "topics without from" {
+            val topics =
+                    unitOfWork.topics(pageSize = 2).toList()
+
+            topics.size shouldBe 2
+
+            topics[0].name shouldBe "Topic 1"
+            topics[1].name shouldBe "Topic 2"
+        }
+
+
+        "topics with from" {
+            val topics =
+                    unitOfWork.topics(from = 1, pageSize = 2).toList()
+
+            topics.size shouldBe 2
+
+            topics[0].name shouldBe "Topic 2"
+            topics[1].name shouldBe "Topic 3"
+        }
     }
 
 
@@ -105,6 +127,10 @@ class H2Test : StringSpec() {
         unitOfWork.saveEvent("CustomerAdded", customerAddedEvent("Han Solo"))
         unitOfWork.saveEvent("CustomerAdded", customerAddedEvent("Ben Solo"))
         unitOfWork.saveEvent("CustomerAdded", customerAddedEvent("Leia Organa"))
+
+        unitOfWork.saveTopic("Topic 1")
+        unitOfWork.saveTopic("Topic 2")
+        unitOfWork.saveTopic("Topic 3")
     }
 
 

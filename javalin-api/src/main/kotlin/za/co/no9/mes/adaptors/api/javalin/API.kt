@@ -37,6 +37,13 @@ class API(private val services: Services) {
 
     internal fun getTopic(id: Int): za.co.no9.mes.adaptors.api.javalin.beans.Topic? =
             services.topic(id)?.from()
+
+
+    internal fun getTopics(start: Int?, pageSize: Int): List<za.co.no9.mes.adaptors.api.javalin.beans.Topic> =
+            services
+                    .topics(start, pageSize)
+                    .map { it.from() }
+                    .toList()
 }
 
 
@@ -103,6 +110,24 @@ fun Javalin.registerAPIEndpoints(services: Services): Javalin {
             ctx.header("Expires", calculateExpires().toGMTString())
             ctx.result(gson.toJson(topic))
         }
+    }
+
+
+    this.get("/api/topics") { ctx ->
+        val start =
+                ctx.queryParam("start")?.toInt()
+
+        val pageSize =
+                ctx.queryParam("pagesize", "100")?.toInt() ?: 100
+
+        val topics =
+                api.getTopics(start, pageSize)
+
+        ctx.header("Content-Type", "application/json")
+        if (topics.size == pageSize) {
+            ctx.header("Expires", calculateExpires().toGMTString())
+        }
+        ctx.result(gson.toJson(topics))
     }
 
 

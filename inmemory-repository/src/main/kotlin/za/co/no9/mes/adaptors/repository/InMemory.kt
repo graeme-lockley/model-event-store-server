@@ -38,11 +38,14 @@ class InMemory : Repository {
         override fun events(from: Int?, pageSize: Int): Sequence<Event> =
                 repository.events(from, pageSize)
 
+        override fun saveTopic(topicName: String): Topic =
+                repository.saveTopic(topicName)
+
         override fun topic(id: Int): Topic? =
                 repository.topic(id)
 
-        override fun saveTopic(topicName: String): Topic =
-                repository.saveTopic(topicName)
+        override fun topics(from: Int?, pageSize: Int): Sequence<Topic> =
+                repository.topics(from, pageSize)
     }
 
     override fun register(observer: Observer) {
@@ -96,6 +99,16 @@ class InMemory : Repository {
 
     private fun topic(id: Int): Topic? =
             savedTopics.firstOrNull { event -> event.id == id }?.asTopic()
+
+
+    private fun topics(from: Int?, pageSize: Int): Sequence<Topic> =
+            (when (from) {
+                null ->
+                    savedTopics.take(pageSize)
+
+                else ->
+                    savedTopics.dropWhile { it.id <= from }.take(pageSize)
+            }).map { it.asTopic() }.asSequence()
 
 
     fun reset() {

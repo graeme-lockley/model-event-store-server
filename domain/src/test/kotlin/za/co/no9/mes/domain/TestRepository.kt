@@ -35,11 +35,14 @@ class TestRepository : Repository {
         override fun events(from: Int?, pageSize: Int): Sequence<Event> =
                 repository.events(from, pageSize)
 
+        override fun saveTopic(topicName: String): Topic =
+                repository.saveTopic(topicName)
+
         override fun topic(id: Int): Topic? =
                 repository.topic(id)
 
-        override fun saveTopic(topicName: String): Topic =
-                repository.saveTopic(topicName)
+        override fun topics(from: Int?, pageSize: Int): Sequence<Topic> =
+                repository.topics(from, pageSize)
     }
 
     override fun register(observer: Observer) {
@@ -73,11 +76,7 @@ class TestRepository : Repository {
             if (from == null)
                 savedEvents.take(pageSize).asSequence()
             else
-                eventsFrom(from, pageSize)
-
-
-    private fun eventsFrom(id: Int, pageSize: Int): Sequence<Event> =
-            savedEvents.dropWhile { it.id <= id }.take(pageSize).asSequence()
+                savedEvents.dropWhile { it.id <= from }.take(pageSize).asSequence()
 
 
     private fun saveTopic(topicName: String): Topic {
@@ -93,6 +92,13 @@ class TestRepository : Repository {
 
     private fun topic(id: Int): Topic? =
             savedTopics.firstOrNull { event -> event.id == id }?.asTopic()
+
+
+    private fun topics(from: Int?, pageSize: Int): Sequence<Topic> =
+            if (from == null)
+                savedTopics.take(pageSize).map { it.asTopic() }.asSequence()
+            else
+                savedTopics.dropWhile { it.id <= from }.take(pageSize).map { it.asTopic() }.asSequence()
 
 
     fun reset() {

@@ -9,9 +9,12 @@ interface UnitOfWork {
 
     fun event(id: Int): Event?
 
-    fun events(from: Int?, pageSize: Int): Sequence<Event>
+    fun events(from: Int? = null, pageSize: Int): Sequence<Event>
+
+
+    fun saveTopic(topicName: String): Topic
 
     fun topic(id: Int): Topic?
 
-    fun saveTopic(topicName: String): Topic
+    fun topics(from: Int? = null, pageSize: Int): Sequence<Topic>
 }
