@@ -17,6 +17,7 @@ fun startServer(services: Services): Javalin =
                 .disableStartupBanner()
                 .enableCorsForAllOrigins()
                 .registerAPIEndpoints(services)
+                .registerWebsocketEndpoints(services)
                 .start()
 
 

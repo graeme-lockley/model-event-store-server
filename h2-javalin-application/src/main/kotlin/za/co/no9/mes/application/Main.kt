@@ -7,6 +7,7 @@ import org.apache.commons.cli.Option
 import org.apache.commons.cli.Options
 import org.jdbi.v3.core.Jdbi
 import za.co.no9.mes.adaptors.api.javalin.registerAPIEndpoints
+import za.co.no9.mes.adaptors.api.javalin.registerWebsocketEndpoints
 import za.co.no9.mes.adaptors.repository.H2
 import za.co.no9.mes.domain.Services
 
@@ -50,19 +51,15 @@ const val DEFAULT_JDBC_PASS =
         ""
 
 
-fun startServer(services: Services, port: Int): Javalin {
-    val javalin = Javalin
-            .create()
-            .port(port)
-            .disableStartupBanner()
-            .enableCorsForAllOrigins()
-            .registerAPIEndpoints(services)
-            .start()
-
-//            WebsocketAPI.registerEndpoints(javalin, services)
-
-    return javalin
-}
+fun startServer(services: Services, port: Int): Javalin =
+        Javalin
+                .create()
+                .port(port)
+                .disableStartupBanner()
+                .enableCorsForAllOrigins()
+                .registerAPIEndpoints(services)
+                .registerWebsocketEndpoints(services)
+                .start()
 
 
 fun main(args: Array<String>) {
