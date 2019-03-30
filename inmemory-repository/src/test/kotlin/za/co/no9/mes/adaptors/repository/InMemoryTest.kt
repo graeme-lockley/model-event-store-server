@@ -4,6 +4,7 @@ import io.kotlintest.Description
 import io.kotlintest.TestCase
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
+import za.co.no9.mes.domain.Topic
 
 
 class InMemoryTest : StringSpec() {
@@ -84,6 +85,15 @@ class InMemoryTest : StringSpec() {
 
             event2.id shouldBe 1
             event2.content shouldBe "CustomerAdded(name=Ben Kenobi)"
+        }
+
+
+        "add a new topic" {
+            val topic1 =
+                    unitOfWork.saveTopic("*default*")
+
+            topic1.name shouldBe "*default*"
+            unitOfWork.topic(topic1.id) shouldBe topic1
         }
     }
 

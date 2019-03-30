@@ -16,6 +16,14 @@ class Services(val repository: Repository) {
             repository.newUnitOfWork().saveEvent(eventName, content)
 
 
+    fun topic(id: Int): Topic? =
+            repository.newUnitOfWork().topic(id)
+
+
+    fun saveTopic(topicName: String): Topic =
+            repository.newUnitOfWork().saveTopic(topicName)
+
+
     fun registerObserver(observer: Observer) {
         repository.register(observer)
     }

@@ -77,6 +77,15 @@ class H2Test : StringSpec() {
             event7.content shouldBe "CustomerAdded(name=C3PIO)"
             unitOfWork.event(7) shouldBe event7
         }
+
+
+        "add a new topic" {
+            val topic1 =
+                    unitOfWork.saveTopic("*default*")
+
+            topic1.name shouldBe "*default*"
+            unitOfWork.topic(topic1.id) shouldBe topic1
+        }
     }
 
 

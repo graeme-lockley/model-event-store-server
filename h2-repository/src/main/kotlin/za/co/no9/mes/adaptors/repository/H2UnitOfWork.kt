@@ -2,6 +2,7 @@ package za.co.no9.mes.adaptors.repository
 
 import org.jdbi.v3.core.Jdbi
 import za.co.no9.mes.domain.Event
+import za.co.no9.mes.domain.Topic
 import java.sql.Timestamp
 import java.time.Instant
 import java.util.*
@@ -51,5 +52,25 @@ class H2UnitOfWork(private val jdbi: Jdbi) : za.co.no9.mes.domain.ports.UnitOfWo
                         .map { rs, _ -> rs.getInt(1) }
                         .findFirst()
                         .orElse(Integer.MIN_VALUE)
+            }
+
+
+    override fun topic(id: Int): Topic? =
+            jdbi.withHandle<Topic?, RuntimeException> { handle ->
+                handle.select("select id, name from topic where id = ?", id)
+                        .map { rs, _ -> Topic(rs.getInt("id"), rs.getString("name")) }
+                        .findFirst()
+                        .orElse(null)
+            }
+
+
+    override fun saveTopic(topicName: String): Topic =
+            jdbi.withHandle<Topic, RuntimeException> { handle ->
+                handle.execute("insert into topic (name) values (?)", topicName)
+
+                handle
+                        .createQuery("select id, name from topic where id = SCOPE_IDENTITY()")
+                        .map { rs, _ -> Topic(rs.getInt("id"), rs.getString("name")) }
+                        .findOnly()
             }
 }

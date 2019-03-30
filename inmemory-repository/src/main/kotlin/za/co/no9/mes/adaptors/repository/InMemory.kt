@@ -2,6 +2,7 @@ package za.co.no9.mes.adaptors.repository
 
 import za.co.no9.mes.domain.Event
 import za.co.no9.mes.domain.Observer
+import za.co.no9.mes.domain.Topic
 import za.co.no9.mes.domain.ports.Repository
 import za.co.no9.mes.domain.ports.UnitOfWork
 import java.time.Instant
@@ -15,6 +16,10 @@ class InMemory : Repository {
     private val savedEvents =
             mutableListOf<Event>()
 
+    private val savedTopics =
+            mutableListOf<TopicRecord>()
+
+
     private var idCounter =
             0
 
@@ -23,7 +28,7 @@ class InMemory : Repository {
             TestUnitOfWork(this)
 
 
-    class TestUnitOfWork(val repository: InMemory) : UnitOfWork {
+    class TestUnitOfWork(private val repository: InMemory) : UnitOfWork {
         override fun saveEvent(eventName: String, content: String): Event =
                 repository.saveEvent(eventName, content)
 
@@ -33,6 +38,11 @@ class InMemory : Repository {
         override fun events(from: Int?, pageSize: Int): Sequence<Event> =
                 repository.events(from, pageSize)
 
+        override fun topic(id: Int): Topic? =
+                repository.topic(id)
+
+        override fun saveTopic(topicName: String): Topic =
+                repository.saveTopic(topicName)
     }
 
     override fun register(observer: Observer) {
@@ -46,7 +56,8 @@ class InMemory : Repository {
 
 
     private fun saveEvent(eventName: String, content: String): Event {
-        val detail = Event(idCounter, Date.from(Instant.now()), eventName, content)
+        val detail =
+                Event(idCounter, Date.from(Instant.now()), eventName, content)
 
         savedEvents.add(detail)
         idCounter += 1
@@ -72,10 +83,32 @@ class InMemory : Repository {
             savedEvents.dropWhile { it.id <= id }.take(pageSize).asSequence()
 
 
+    private fun saveTopic(topicName: String): Topic {
+        val record =
+                TopicRecord(idCounter, topicName)
+
+        savedTopics.add(record)
+        idCounter += 1
+
+        return record.asTopic()
+    }
+
+
+    private fun topic(id: Int): Topic? =
+            savedTopics.firstOrNull { event -> event.id == id }?.asTopic()
+
+
     fun reset() {
         observers.clear()
         savedEvents.clear()
+        savedTopics.clear()
 
         idCounter = 0
     }
+}
+
+
+data class TopicRecord(val id: Int, val name: String) {
+    fun asTopic(): Topic =
+            Topic(id, name)
 }

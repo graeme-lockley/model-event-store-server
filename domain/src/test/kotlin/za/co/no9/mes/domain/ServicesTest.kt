@@ -1,6 +1,5 @@
 package za.co.no9.mes.domain
 
-import io.kotlintest.Description
 import io.kotlintest.TestCase
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
@@ -85,6 +84,16 @@ class ServicesTest : StringSpec() {
 
             event2.id shouldBe 1
             event2.content shouldBe "CustomerAdded(name=Ben Kenobi)"
+        }
+
+
+        "create a new topic" {
+            val topic1 =
+                    services.saveTopic("*default*")
+
+            topic1.name shouldBe "*default*"
+
+            services.topic(topic1.id) shouldBe topic1
         }
     }
 

@@ -13,3 +13,9 @@
       when: 'timestamp not null'
       name: 'varchar(20) not null'
       content: 'text not null'
+
+- jdbc-create-table:
+    name: topic
+    fields:
+      id: 'bigint not null primary key auto_increment'
+      name: 'varchar(20) not null'
