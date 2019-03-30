@@ -1,13 +1,12 @@
 package za.co.no9.mes.application
 
 import com.google.gson.Gson
-import io.kotlintest.Description
 import io.kotlintest.TestCase
 import io.kotlintest.TestResult
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import org.apache.http.client.fluent.Request
-import za.co.no9.mes.adaptors.api.javalin.EventBean
+import za.co.no9.mes.adaptors.api.javalin.beans.Event
 
 
 class APITest : StringSpec({
@@ -20,7 +19,7 @@ class APITest : StringSpec({
                 Request.Get(baseURI + "events/2").execute().returnContent().asString()
 
         val eventBean =
-                Gson().fromJson(response, EventBean::class.java)
+                Gson().fromJson(response, Event::class.java)
 
         eventBean.name shouldBe "AccountAdded"
 

@@ -9,6 +9,8 @@ import org.apache.http.client.fluent.Request
 import org.apache.http.entity.ContentType
 import za.co.no9.mes.adaptors.api.javalin.beans.Event
 import za.co.no9.mes.adaptors.api.javalin.beans.NewEvent
+import za.co.no9.mes.adaptors.api.javalin.beans.NewTopic
+import za.co.no9.mes.adaptors.api.javalin.beans.Topic
 import za.co.no9.mes.adaptors.repository.InMemory
 import za.co.no9.mes.domain.Services
 
@@ -117,13 +119,8 @@ class APITest : StringSpec() {
             val input =
                     NewEvent("CharacterAdded", content)
 
-
-            // This is a piece of dummy Get code which causes the flow to wait until the server is ready.  For one or other
-            // reason Post does not wait but then fails immediately.
-            Request.Get(BASE_URI + "events/1").execute()
-
             val response =
-                    Request.Post(BASE_URI + "events").bodyString(gson.toJson(input), ContentType.APPLICATION_JSON).execute().returnContent().asString()
+                    post("events", input)
 
             val eventBean =
                     gson.fromJson(response, Event::class.java)
@@ -131,6 +128,51 @@ class APITest : StringSpec() {
             eventBean.name shouldBe "CharacterAdded"
             eventBean.content shouldBe content
         }
+
+
+        "known topic" {
+            val topicID =
+                    services.saveTopic("*default*").id
+
+            val response =
+                    Request.Get("${BASE_URI}topics/$topicID").execute().returnContent().asString()
+
+            val topic =
+                    gson.fromJson(response, Topic::class.java)
+
+            topic.name shouldBe "*default*"
+        }
+
+
+        "unknown topic" {
+            val response =
+                    Request.Get("${BASE_URI}topics/10").execute()
+
+            response.returnResponse().statusLine.statusCode shouldBe 412
+        }
+
+
+        "save topic" {
+            val input =
+                    NewTopic("*default*")
+
+            val response =
+                    post("topics", input)
+
+            val topicBean =
+                    gson.fromJson(response, Topic::class.java)
+
+            topicBean.name shouldBe "*default*"
+        }
+    }
+
+
+    private fun post(resourceName: String, input: Any): String {
+        // This is a piece of dummy Get code which causes the flow to wait until the server is ready.  For one or other
+        // reason Post does not wait but then fails immediately.
+        Request.Get(BASE_URI + "events/1").execute()
+
+        return Request.Post(BASE_URI + resourceName).bodyString(gson.toJson(input), ContentType.APPLICATION_JSON).execute().returnContent().asString()
     }
 
 

@@ -34,4 +34,17 @@ http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
                  stripComments="true"/>
     </changeSet>
 
+    <changeSet id="3" author="bob">
+        <createTable tableName="topic">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addAutoIncrement tableName="topic" columnName="id" columnDataType="bigint" />
+    </changeSet>
+
 </databaseChangeLog>

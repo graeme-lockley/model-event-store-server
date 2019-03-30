@@ -4,8 +4,10 @@ import com.google.gson.Gson
 import io.javalin.Javalin
 import org.apache.commons.io.IOUtils
 import za.co.no9.mes.adaptors.api.javalin.beans.NewEvent
+import za.co.no9.mes.adaptors.api.javalin.beans.NewTopic
 import za.co.no9.mes.domain.Event
 import za.co.no9.mes.domain.Services
+import za.co.no9.mes.domain.Topic
 import java.util.*
 
 
@@ -25,6 +27,16 @@ class API(private val services: Services) {
 
     internal fun getEvent(id: Int): za.co.no9.mes.adaptors.api.javalin.beans.Event? =
             services.event(id)?.from()
+
+
+    fun saveTopic(newTopic: NewTopic): za.co.no9.mes.adaptors.api.javalin.beans.Topic =
+            services
+                    .saveTopic(newTopic.name)
+                    .from()
+
+
+    internal fun getTopic(id: Int): za.co.no9.mes.adaptors.api.javalin.beans.Topic? =
+            services.topic(id)?.from()
 }
 
 
@@ -34,6 +46,7 @@ fun Javalin.registerAPIEndpoints(services: Services): Javalin {
 
     val gson =
             Gson()
+
 
     this.get("/api/events/:id") { ctx ->
         val event =
@@ -47,6 +60,7 @@ fun Javalin.registerAPIEndpoints(services: Services): Javalin {
             ctx.result(gson.toJson(event))
         }
     }
+
 
     this.get("/api/events") { ctx ->
         val start =
@@ -65,6 +79,7 @@ fun Javalin.registerAPIEndpoints(services: Services): Javalin {
         ctx.result(gson.toJson(events))
     }
 
+
     this.post("/api/events") { ctx ->
         val newEventBean =
                 gson.fromJson(ctx.body(), NewEvent::class.java)
@@ -75,6 +90,33 @@ fun Javalin.registerAPIEndpoints(services: Services): Javalin {
         ctx.header("Content-Type", "application/json")
         ctx.result(gson.toJson(event))
     }
+
+
+    this.get("/api/topics/:id") { ctx ->
+        val topic =
+                api.getTopic(Integer.parseInt(ctx.pathParam("id")))
+
+        if (topic == null) {
+            ctx.status(412)
+        } else {
+            ctx.header("Content-Type", "application/json")
+            ctx.header("Expires", calculateExpires().toGMTString())
+            ctx.result(gson.toJson(topic))
+        }
+    }
+
+
+    this.post("/api/topics") { ctx ->
+        val newTopicBean =
+                gson.fromJson(ctx.body(), NewTopic::class.java)
+
+        val topic =
+                api.saveTopic(newTopicBean)
+
+        ctx.header("Content-Type", "application/json")
+        ctx.result(gson.toJson(topic))
+    }
+
 
     this.get("/api") { ctx ->
         API::class.java.getResourceAsStream("/swagger.yaml").use { resourceAsStream ->
@@ -96,7 +138,10 @@ private fun calculateExpires(): Date {
 }
 
 
-fun Event.from(): za.co.no9.mes.adaptors.api.javalin.beans.Event =
+private fun Event.from(): za.co.no9.mes.adaptors.api.javalin.beans.Event =
         za.co.no9.mes.adaptors.api.javalin.beans.Event(id, `when`, name, content)
 
+
+private fun Topic.from(): za.co.no9.mes.adaptors.api.javalin.beans.Topic =
+        za.co.no9.mes.adaptors.api.javalin.beans.Topic(id, name)
 
