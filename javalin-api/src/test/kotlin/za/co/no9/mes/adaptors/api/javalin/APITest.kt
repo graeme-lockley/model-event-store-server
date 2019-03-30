@@ -87,7 +87,7 @@ class APITest : StringSpec() {
 
         "events from" {
             val response =
-                    Request.Get(BASE_URI + "events?start=2").execute().returnContent().asString()
+                    Request.Get(BASE_URI + "events?from=2").execute().returnContent().asString()
 
             val eventBeans = toEventBeanList(response)
 
@@ -117,7 +117,7 @@ class APITest : StringSpec() {
 
         "events from with pagesize" {
             val response =
-                    Request.Get(BASE_URI + "events?start=1&pagesize=2").execute().returnContent().asString()
+                    Request.Get(BASE_URI + "events?from=1&pagesize=2").execute().returnContent().asString()
 
             val eventBeans = toEventBeanList(response)
 
@@ -179,7 +179,7 @@ class APITest : StringSpec() {
 
         "topics with from" {
             val response =
-                    Request.Get(BASE_URI + "topics?start=5").execute().returnContent().asString()
+                    Request.Get(BASE_URI + "topics?from=5").execute().returnContent().asString()
 
             val topics =
                     toTopicsList(response)
@@ -192,7 +192,7 @@ class APITest : StringSpec() {
 
         "topics with pagesize" {
             val response =
-                    Request.Get(BASE_URI + "topics?start=5&pagesize=1").execute().returnContent().asString()
+                    Request.Get(BASE_URI + "topics?from=5&pagesize=1").execute().returnContent().asString()
 
             val topics =
                     toTopicsList(response)

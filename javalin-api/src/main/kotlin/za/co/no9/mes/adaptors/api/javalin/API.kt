@@ -71,7 +71,7 @@ fun Javalin.registerAPIEndpoints(services: Services): Javalin {
 
     this.get("/api/events") { ctx ->
         val start =
-                ctx.queryParam("start")?.toInt()
+                ctx.queryParam("from")?.toInt()
 
         val pageSize =
                 ctx.queryParam("pagesize", "100")?.toInt() ?: 100
@@ -115,7 +115,7 @@ fun Javalin.registerAPIEndpoints(services: Services): Javalin {
 
     this.get("/api/topics") { ctx ->
         val start =
-                ctx.queryParam("start")?.toInt()
+                ctx.queryParam("from")?.toInt()
 
         val pageSize =
                 ctx.queryParam("pagesize", "100")?.toInt() ?: 100

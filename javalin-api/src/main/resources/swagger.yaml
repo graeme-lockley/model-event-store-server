@@ -23,7 +23,7 @@ paths:
       summary: Sequence of all events in the order
       operationId: getEvents
       parameters:
-        - name: start
+        - name: from
           in: query
           schema:
             type: integer
