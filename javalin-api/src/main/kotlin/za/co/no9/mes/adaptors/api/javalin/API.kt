@@ -3,26 +3,27 @@ package za.co.no9.mes.adaptors.api.javalin
 import com.google.gson.Gson
 import io.javalin.Javalin
 import org.apache.commons.io.IOUtils
+import za.co.no9.mes.adaptors.api.javalin.beans.NewEvent
 import za.co.no9.mes.domain.Event
 import za.co.no9.mes.domain.Services
 import java.util.*
 
 
 class API(private val services: Services) {
-    internal fun saveEvent(newEvent: NewEventBean): EventBean =
+    internal fun saveEvent(newEvent: NewEvent): za.co.no9.mes.adaptors.api.javalin.beans.Event =
             services
                     .saveEvent(newEvent.name, newEvent.content)
                     .from()
 
 
-    internal fun getEvents(start: Int?, pageSize: Int): List<EventBean> =
+    internal fun getEvents(start: Int?, pageSize: Int): List<za.co.no9.mes.adaptors.api.javalin.beans.Event> =
             services
                     .events(start, pageSize)
                     .map { it.from() }
                     .toList()
 
 
-    internal fun getEvent(id: Int): EventBean? =
+    internal fun getEvent(id: Int): za.co.no9.mes.adaptors.api.javalin.beans.Event? =
             services.event(id)?.from()
 }
 
@@ -66,9 +67,9 @@ fun Javalin.registerAPIEndpoints(services: Services): Javalin {
 
     this.post("/api/events") { ctx ->
         val newEventBean =
-                gson.fromJson(ctx.body(), NewEventBean::class.java)
+                gson.fromJson(ctx.body(), NewEvent::class.java)
 
-        val event: EventBean =
+        val event: za.co.no9.mes.adaptors.api.javalin.beans.Event =
                 api.saveEvent(newEventBean)
 
         ctx.header("Content-Type", "application/json")
@@ -95,13 +96,7 @@ private fun calculateExpires(): Date {
 }
 
 
-class EventBean(val id: Int, val `when`: Date, val name: String, val content: String)
-
-
-class NewEventBean(val name: String, val content: String)
-
-
-fun Event.from(): EventBean =
-        EventBean(this.id, this.`when`, this.name, this.content)
+fun Event.from(): za.co.no9.mes.adaptors.api.javalin.beans.Event =
+        za.co.no9.mes.adaptors.api.javalin.beans.Event(id, `when`, name, content)
 
 

@@ -2,12 +2,13 @@ package za.co.no9.mes.adaptors.api.javalin
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import io.kotlintest.Description
 import io.kotlintest.TestCase
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import org.apache.http.client.fluent.Request
 import org.apache.http.entity.ContentType
+import za.co.no9.mes.adaptors.api.javalin.beans.Event
+import za.co.no9.mes.adaptors.api.javalin.beans.NewEvent
 import za.co.no9.mes.adaptors.repository.InMemory
 import za.co.no9.mes.domain.Services
 
@@ -33,7 +34,7 @@ class APITest : StringSpec() {
                     Request.Get(BASE_URI + "events/2").execute().returnContent().asString()
 
             val eventBean =
-                    gson.fromJson(response, EventBean::class.java)
+                    gson.fromJson(response, Event::class.java)
 
             eventBean.name shouldBe "CustomerAdded"
             eventBean.content shouldBe customerAddedEvent("Han Solo")
@@ -114,7 +115,7 @@ class APITest : StringSpec() {
                     CustomerAdded("Luke Skywalker").toString()
 
             val input =
-                    NewEventBean("CharacterAdded", content)
+                    NewEvent("CharacterAdded", content)
 
 
             // This is a piece of dummy Get code which causes the flow to wait until the server is ready.  For one or other
@@ -125,7 +126,7 @@ class APITest : StringSpec() {
                     Request.Post(BASE_URI + "events").bodyString(gson.toJson(input), ContentType.APPLICATION_JSON).execute().returnContent().asString()
 
             val eventBean =
-                    gson.fromJson(response, EventBean::class.java)
+                    gson.fromJson(response, Event::class.java)
 
             eventBean.name shouldBe "CharacterAdded"
             eventBean.content shouldBe content
@@ -154,11 +155,11 @@ class APITest : StringSpec() {
 }
 
 
-fun toEventBeanList(response: String): List<EventBean>? {
-    val listType = object : TypeToken<ArrayList<EventBean>>() {
+fun toEventBeanList(response: String): List<Event>? {
+    val listType = object : TypeToken<ArrayList<Event>>() {
     }.type
 
-    return gson.fromJson<List<EventBean>>(response, listType)
+    return gson.fromJson<List<Event>>(response, listType)
 }
 
 
