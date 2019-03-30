@@ -18,17 +18,17 @@
 
     <parent>
         <groupId>za.co.no9</groupId>
-        <artifactId>mes8</artifactId>
+        <artifactId>mes</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>mes8-inmemory-repository</artifactId>
+    <artifactId>mes-inmemory-repository</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>za.co.no9</groupId>
-            <artifactId>mes8-domain</artifactId>
+            <artifactId>mes-domain</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
