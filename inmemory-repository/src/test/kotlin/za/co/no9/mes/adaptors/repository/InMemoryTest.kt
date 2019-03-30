@@ -1,6 +1,7 @@
 package za.co.no9.mes.adaptors.repository
 
 import io.kotlintest.Description
+import io.kotlintest.TestCase
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 
@@ -87,8 +88,8 @@ class InMemoryTest : StringSpec() {
     }
 
 
-    override fun beforeTest(description: Description) {
-        super.beforeTest(description)
+    override fun beforeTest(testCase: TestCase) {
+        super.beforeTest(testCase)
 
         this.repository.reset()
 

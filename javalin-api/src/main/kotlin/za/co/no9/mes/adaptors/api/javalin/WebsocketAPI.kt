@@ -80,7 +80,7 @@ class WebsocketAPI constructor(private val services: Services) : Observer {
 
     @Synchronized
     override fun ping() {
-        sessions.forEach { key, session -> session.ping() }
+        sessions.forEach { _, session -> session.ping() }
     }
 }
 

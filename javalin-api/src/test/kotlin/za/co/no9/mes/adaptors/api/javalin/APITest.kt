@@ -3,6 +3,7 @@ package za.co.no9.mes.adaptors.api.javalin
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.kotlintest.Description
+import io.kotlintest.TestCase
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import org.apache.http.client.fluent.Request
@@ -132,8 +133,8 @@ class APITest : StringSpec() {
     }
 
 
-    override fun beforeTest(description: Description) {
-        super.beforeTest(description)
+    override fun beforeTest(testCase: TestCase) {
+        super.beforeTest(testCase)
 
         inMemory.reset()
 

@@ -2,6 +2,7 @@ package za.co.no9.mes.application
 
 import com.google.gson.Gson
 import io.kotlintest.Description
+import io.kotlintest.TestCase
 import io.kotlintest.TestResult
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
@@ -33,17 +34,17 @@ class APITest : StringSpec({
         response.returnResponse().statusLine.statusCode shouldBe 412
     }
 }) {
-    var server: Main? =
+    private var server: Main? =
             null
 
-    override fun beforeTest(description: Description) {
-        super.beforeTest(description)
+    override fun beforeTest(testCase: TestCase) {
+        super.beforeTest(testCase)
 
         server = Main(DEFAULT_PORT, DEFAULT_TEST_JDBC_URL, DEFAULT_JDBC_USER, DEFAULT_JDBC_PASS)
     }
 
-    override fun afterTest(description: Description, result: TestResult) {
-        super.afterTest(description, result)
+    override fun afterTest(testCase: TestCase, result: TestResult) {
+        super.afterTest(testCase, result)
 
         server!!.shutdown()
     }

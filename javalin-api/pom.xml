@@ -26,9 +26,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
+            <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>${apache.commons.io.version}</version>
+            <version>${commons.io.version}</version>
         </dependency>
 
         <dependency>
