@@ -25,7 +25,6 @@ class H2Test : RepositoryTest() {
 
 
     override fun beforeTest(testCase: TestCase) {
-
         val fixtures =
                 Fixtures.process(FixturesInput.fromLocation("resource:initial.yaml"))
 
