@@ -28,7 +28,24 @@ class Services(val repository: Repository) {
             repository.newUnitOfWork().saveTopic(topicName)
 
 
+    fun createEventType(eventName: String, topicID: Int): Either<Error, EventType> {
+        val topic =
+                topic(topicID)
+
+        return if (topic == null) {
+            error(UnknownTopicID(topicID))
+        } else {
+            val eventTypeDTO =
+                    repository.newUnitOfWork().saveEventType(eventName, topicID)
+
+            value(EventType(eventTypeDTO.id, eventName, topic))
+        }
+    }
+
     fun registerObserver(observer: Observer) {
         repository.register(observer)
     }
 }
+
+
+data class EventType(val id: Int, val name: String, val topic: Topic)

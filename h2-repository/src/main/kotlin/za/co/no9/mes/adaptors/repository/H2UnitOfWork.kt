@@ -3,6 +3,7 @@ package za.co.no9.mes.adaptors.repository
 import org.jdbi.v3.core.Jdbi
 import za.co.no9.mes.domain.Event
 import za.co.no9.mes.domain.Topic
+import za.co.no9.mes.domain.ports.EventTypeDTO
 import java.sql.Timestamp
 import java.time.Instant
 import java.util.*
@@ -90,4 +91,16 @@ class H2UnitOfWork(private val jdbi: Jdbi) : za.co.no9.mes.domain.ports.UnitOfWo
                             .list()
                 }
             }.asSequence()
+
+
+    override fun saveEventType(name: String, topicID: Int): EventTypeDTO =
+            jdbi.withHandle<EventTypeDTO, RuntimeException> { handle ->
+                handle.execute("insert into eventtype (name, topicID) values (?, ?)", name, topicID)
+
+                handle
+                        .createQuery("select id, name, topicID from eventtype where id = SCOPE_IDENTITY()")
+                        .map { rs, _ -> EventTypeDTO(rs.getInt("id"), rs.getString("name"), rs.getInt("topicID")) }
+                        .findOnly()
+            }
+
 }

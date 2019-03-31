@@ -1,5 +1,6 @@
 package za.co.no9.mes.domain
 
+import za.co.no9.mes.domain.ports.EventTypeDTO
 import za.co.no9.mes.domain.ports.Repository
 import za.co.no9.mes.domain.ports.UnitOfWork
 import java.time.Instant
@@ -14,7 +15,10 @@ class TestRepository : Repository {
             mutableListOf<Event>()
 
     private val savedTopics =
-            mutableListOf<TopicRecord>()
+            mutableListOf<TopicDTO>()
+
+    private val savedEventTypes =
+            mutableListOf<EventTypeDTO>()
 
 
     private var idCounter =
@@ -43,6 +47,10 @@ class TestRepository : Repository {
 
         override fun topics(from: Int?, pageSize: Int): Sequence<Topic> =
                 repository.topics(from, pageSize)
+
+        override fun saveEventType(name: String, topicID: Int): EventTypeDTO =
+                repository.saveEventType(name, topicID)
+
     }
 
     override fun register(observer: Observer) {
@@ -81,7 +89,7 @@ class TestRepository : Repository {
 
     private fun saveTopic(topicName: String): Topic {
         val record =
-                TopicRecord(idCounter, topicName)
+                TopicDTO(idCounter, topicName)
 
         savedTopics.add(record)
         idCounter += 1
@@ -101,17 +109,29 @@ class TestRepository : Repository {
                 savedTopics.dropWhile { it.id <= from }.take(pageSize).map { it.asTopic() }.asSequence()
 
 
+    private fun saveEventType(name: String, topicID: Int): EventTypeDTO {
+        val dto =
+                EventTypeDTO(idCounter, name, topicID)
+
+        savedEventTypes.add(dto)
+        idCounter += 1
+
+        return dto
+    }
+
+
     fun reset() {
         observers.clear()
         savedEvents.clear()
         savedTopics.clear()
+        savedEventTypes.clear()
 
         idCounter = 0
     }
 }
 
 
-data class TopicRecord(val id: Int, val name: String) {
+data class TopicDTO(val id: Int, val name: String) {
     fun asTopic(): Topic =
             Topic(id, name)
 }

@@ -3,6 +3,7 @@ package za.co.no9.mes.adaptors.repository
 import za.co.no9.mes.domain.Event
 import za.co.no9.mes.domain.Observer
 import za.co.no9.mes.domain.Topic
+import za.co.no9.mes.domain.ports.EventTypeDTO
 import za.co.no9.mes.domain.ports.Repository
 import za.co.no9.mes.domain.ports.UnitOfWork
 import java.time.Instant
@@ -18,6 +19,9 @@ class InMemory : Repository {
 
     private val savedTopics =
             mutableListOf<TopicRecord>()
+
+    private val savedEventTypes =
+            mutableListOf<EventTypeDTO>()
 
 
     private var idCounter =
@@ -46,6 +50,9 @@ class InMemory : Repository {
 
         override fun topics(from: Int?, pageSize: Int): Sequence<Topic> =
                 repository.topics(from, pageSize)
+
+        override fun saveEventType(name: String, topicID: Int): EventTypeDTO =
+                repository.saveEventType(name, topicID)
     }
 
     override fun register(observer: Observer) {
@@ -111,10 +118,21 @@ class InMemory : Repository {
             }).map { it.asTopic() }.asSequence()
 
 
+    private fun saveEventType(name: String, topicID: Int): EventTypeDTO {
+        val dto =
+                EventTypeDTO(idCounter, name, topicID)
+
+        savedEventTypes.add(dto)
+        idCounter += 1
+
+        return dto
+    }
+
     fun reset() {
         observers.clear()
         savedEvents.clear()
         savedTopics.clear()
+        savedEventTypes.clear()
 
         idCounter = 0
     }

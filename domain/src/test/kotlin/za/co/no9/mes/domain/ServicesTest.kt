@@ -115,6 +115,22 @@ class ServicesTest : StringSpec() {
             topics[0].name shouldBe "Topic 2"
             topics[1].name shouldBe "Topic 3"
         }
+
+
+        "create event type with a known topic ID" {
+            val eventType =
+                    services.createEventType("CustomerAdded", 5).right()!!
+
+            eventType.name shouldBe "CustomerAdded"
+            eventType.topic.name shouldBe "Topic 1"
+        }
+
+        "attempt to create event type with an unknown topic ID" {
+            val eventType =
+                    services.createEventType("CustomerAdded", 100).left()!! as UnknownTopicID
+
+            eventType.topicID shouldBe 100
+        }
     }
 
 

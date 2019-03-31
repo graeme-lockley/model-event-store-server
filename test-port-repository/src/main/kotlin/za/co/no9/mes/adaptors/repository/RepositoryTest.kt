@@ -101,6 +101,15 @@ abstract class RepositoryTest : StringSpec() {
             topics[0].name shouldBe "Topic 2"
             topics[1].name shouldBe "Topic 3"
         }
+
+
+        "add a new event type with a valid topic ID" {
+            val eventType =
+                    unitOfWork.saveEventType("Event Name", startTopicsID())
+
+            eventType.name shouldBe "Event Name"
+            eventType.topicID shouldBe startTopicsID()
+        }
     }
 
 

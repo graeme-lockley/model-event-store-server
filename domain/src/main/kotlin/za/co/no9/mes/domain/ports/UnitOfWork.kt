@@ -17,4 +17,10 @@ interface UnitOfWork {
     fun topic(id: Int): Topic?
 
     fun topics(from: Int? = null, pageSize: Int): Sequence<Topic>
+
+
+    fun saveEventType(name: String, topicID: Int): EventTypeDTO
 }
+
+
+data class EventTypeDTO(val id: Int, val name: String, val topicID: Int)
