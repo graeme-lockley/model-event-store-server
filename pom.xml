@@ -31,6 +31,7 @@
 
     <modules>
         <module>domain</module>
+        <module>test-port-repository</module>
         <module>inmemory-repository</module>
         <module>javalin-api</module>
         <module>h2-repository</module>
