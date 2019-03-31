@@ -9,7 +9,7 @@ import za.co.no9.mes.domain.ports.Repository
 
 
 class H2Test : RepositoryTest() {
-    var h2: H2? =
+    private var h2: H2? =
             null
 
 
