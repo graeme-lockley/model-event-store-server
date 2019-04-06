@@ -37,6 +37,7 @@
         <module>h2-repository</module>
         <module>sqlserver-repository</module>
         <module>h2-javalin-application</module>
+        <module>sqlserver-javalin-application</module>
         <module>ui-demo</module>
     </modules>
 
