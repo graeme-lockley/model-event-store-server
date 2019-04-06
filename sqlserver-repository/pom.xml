@@ -32,6 +32,12 @@
             <version>${h2.database.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>7.3.0.jre11-preview</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.jdbi</groupId>
             <artifactId>jdbi3-core</artifactId>
             <version>${jdbi.version}</version>
@@ -124,6 +130,28 @@
                         <phase>post-integration-test</phase>
                         <goals>
                             <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>3.0.5</version>
+                <configuration>
+                    <changeLogFile>src/test/liquibase/db.changelog.xml</changeLogFile>
+                    <driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
+                    <url>jdbc:sqlserver://localhost:${it-database.port}</url>
+                    <username>sa</username>
+                    <password>Sa345678</password>
+                    <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>updateSQL</goal>
                         </goals>
                     </execution>
                 </executions>

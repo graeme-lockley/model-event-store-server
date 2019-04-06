@@ -36,3 +36,35 @@ class SQLServerTest : RepositoryTest() {
         super.beforeTest(testCase)
     }
 }
+
+
+class SQLServerIntegrationTest : RepositoryTest() {
+    private var SQLServer: SQLServer? =
+            null
+
+
+    override fun repository(): Repository =
+            SQLServer!!
+
+
+    override fun startEventsID(): Int =
+            1
+
+    override fun startTopicsID(): Int =
+            1
+
+
+    override fun beforeTest(testCase: TestCase) {
+        val fixtures =
+                Fixtures.process(FixturesInput.fromLocation("resource:initial.yaml"))
+
+        val jdbc =
+                Jdbi.create(fixtures.findHandler(JDBCHandler::class.java).get().connection())
+
+        SQLServer = SQLServer(jdbc)
+
+        super.beforeTest(testCase)
+    }
+}
+
+
