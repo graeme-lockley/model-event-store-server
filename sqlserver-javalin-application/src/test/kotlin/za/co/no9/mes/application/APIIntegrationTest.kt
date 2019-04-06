@@ -39,7 +39,10 @@ class APIIntegrationTest : StringSpec({
     override fun beforeTest(testCase: TestCase) {
         super.beforeTest(testCase)
 
-        server = Main(DEFAULT_PORT, DEFAULT_JDBC_URL, DEFAULT_JDBC_USER, DEFAULT_JDBC_PASS)
+        val jdbcURL =
+                "jdbc:sqlserver://localhost:" + (System.getProperty("it-database.port") ?: "1433")
+
+        server = Main(DEFAULT_PORT, jdbcURL, DEFAULT_JDBC_USER, DEFAULT_JDBC_PASS)
     }
 
     override fun afterTest(testCase: TestCase, result: TestResult) {
