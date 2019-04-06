@@ -10,10 +10,10 @@ import java.util.*
 class SQLServerUnitOfWork(private val jdbi: Jdbi) : za.co.no9.mes.domain.ports.UnitOfWork {
     override fun saveEvent(eventName: String, content: String): Event =
             jdbi.withHandle<Event, RuntimeException> { handle ->
-                handle.execute("insert into event (when, name, content) values (?, ?, ?)", Timestamp(Date.from(Instant.now()).time), eventName, content)
+                handle.execute("insert into event ([when], name, content) values (?, ?, ?)", Timestamp(Date.from(Instant.now()).time), eventName, content)
 
                 handle
-                        .createQuery("select id, when, name, content from event where id = SCOPE_IDENTITY()")
+                        .createQuery("select id, [when], name, content from event where id = @@IDENTITY")
                         .map { rs, _ -> Event(rs.getInt("id"), rs.getTimestamp("when"), rs.getString("name"), rs.getString("content")) }
                         .findOnly()
             }
@@ -21,7 +21,7 @@ class SQLServerUnitOfWork(private val jdbi: Jdbi) : za.co.no9.mes.domain.ports.U
 
     override fun event(id: Int): Event? =
             jdbi.withHandle<Event?, RuntimeException> { handle ->
-                handle.select("select id, when, name, content from event where id = ?", id)
+                handle.select("select id, [when], name, content from event where id = ?", id)
                         .map { rs, _ -> Event(rs.getInt("id"), rs.getTimestamp("when"), rs.getString("name"), rs.getString("content")) }
                         .findFirst()
                         .orElse(null)
@@ -31,14 +31,14 @@ class SQLServerUnitOfWork(private val jdbi: Jdbi) : za.co.no9.mes.domain.ports.U
     override fun events(from: Int?, pageSize: Int): Sequence<Event> =
             if (from == null) {
                 jdbi.withHandle<List<Event>, RuntimeException> { handle ->
-                    handle.select("select id, when, name, content from event order by id limit ?", pageSize)
+                    handle.select("select top $pageSize id, [when], name, content from event order by id")
                             .map { rs, _ -> Event(rs.getInt("id"), rs.getTimestamp("when"), rs.getString("name"), rs.getString("content")) }
                             .list()
                 }
 
             } else {
                 jdbi.withHandle<List<Event>, RuntimeException> { handle ->
-                    handle.select("select id, when, name, content from event where id > ? order by id limit ?", from, pageSize)
+                    handle.select("select top $pageSize id, [when], name, content from event where id > ? order by id", from)
                             .map { rs, _ -> Event(rs.getInt("id"), rs.getTimestamp("when"), rs.getString("name"), rs.getString("content")) }
                             .list()
                 }

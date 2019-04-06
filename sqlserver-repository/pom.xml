@@ -27,14 +27,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>${h2.database.version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
-            <version>7.3.0.jre11-preview</version>
+            <version>7.2.1.jre11</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -90,6 +85,11 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <systemPropertyVariables>
+                        <it-database.port>${it-database.port}</it-database.port>
+                    </systemPropertyVariables>
+                </configuration>
             </plugin>
 
             <plugin>
@@ -139,22 +139,21 @@
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <version>3.0.5</version>
-                <configuration>
-                    <changeLogFile>src/test/liquibase/db.changelog.xml</changeLogFile>
-                    <driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
-                    <url>jdbc:sqlserver://localhost:${it-database.port}</url>
-                    <username>sa</username>
-                    <password>Sa345678</password>
-                    <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
-                </configuration>
                 <executions>
                     <execution>
                         <phase>pre-integration-test</phase>
                         <goals>
-                            <goal>updateSQL</goal>
+                            <goal>update</goal>
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <changeLogFile>${project.basedir}/src/test/liquibase/sqlserver.changelog.xml</changeLogFile>
+                    <driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
+                    <url>jdbc:sqlserver://localhost:${it-database.port}</url>
+                    <username>sa</username>
+                    <password>Sa345678</password>
+                </configuration>
             </plugin>
 
         </plugins>
