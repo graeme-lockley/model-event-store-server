@@ -86,53 +86,7 @@ class ServicesTest : StringSpec() {
             event2.content shouldBe "CustomerAdded(name=Ben Kenobi)"
         }
 
-
-        "create a new topic" {
-            val topic1 =
-                    services.saveTopic("*default*")
-
-            topic1.name shouldBe "*default*"
-
-            services.topic(topic1.id) shouldBe topic1
-        }
-
-        "topics without from" {
-            val topics =
-                    services.topics(pageSize = 2).toList()
-
-            topics.size shouldBe 2
-
-            topics[0].name shouldBe "Topic 1"
-            topics[1].name shouldBe "Topic 2"
-        }
-
-        "topics with from" {
-            val topics =
-                    services.topics(from = 5, pageSize = 2).toList()
-
-            topics.size shouldBe 2
-
-            topics[0].name shouldBe "Topic 2"
-            topics[1].name shouldBe "Topic 3"
-        }
-
-
-        "create event type with a known topic ID" {
-            val eventType =
-                    services.createEventType("CustomerAdded", 5).right()!!
-
-            eventType.name shouldBe "CustomerAdded"
-            eventType.topic.name shouldBe "Topic 1"
-        }
-
-        "attempt to create event type with an unknown topic ID" {
-            val eventType =
-                    services.createEventType("CustomerAdded", 100).left()!! as UnknownTopicID
-
-            eventType.topicID shouldBe 100
-        }
     }
-
 
     override fun beforeTest(testCase: TestCase) {
         super.beforeTest(testCase)
@@ -144,10 +98,6 @@ class ServicesTest : StringSpec() {
         services.saveEvent("CustomerAdded", customerAddedEvent("Han Solo"))
         services.saveEvent("CustomerAdded", customerAddedEvent("Ben Solo"))
         services.saveEvent("CustomerAdded", customerAddedEvent("Leia Organa"))
-
-        services.saveTopic("Topic 1")
-        services.saveTopic("Topic 2")
-        services.saveTopic("Topic 3")
     }
 }
 

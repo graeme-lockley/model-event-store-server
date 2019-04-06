@@ -70,46 +70,6 @@ abstract class RepositoryTest : StringSpec() {
             event2.content shouldBe "CustomerAdded(name=Ben Kenobi)"
             event2 shouldBe unitOfWork.event(event2.id)
         }
-
-
-        "add a new topic" {
-            val topic1 =
-                    unitOfWork.saveTopic("*default*")
-
-            topic1.name shouldBe "*default*"
-            unitOfWork.topic(topic1.id) shouldBe topic1
-        }
-
-
-        "topics without from" {
-            val topics =
-                    unitOfWork.topics(pageSize = 2).toList()
-
-            topics.size shouldBe 2
-
-            topics[0].name shouldBe "Topic 1"
-            topics[1].name shouldBe "Topic 2"
-        }
-
-
-        "topics with from" {
-            val topics =
-                    unitOfWork.topics(from = startTopicsID (), pageSize = 2).toList()
-
-            topics.size shouldBe 2
-
-            topics[0].name shouldBe "Topic 2"
-            topics[1].name shouldBe "Topic 3"
-        }
-
-
-        "add a new event type with a valid topic ID" {
-            val eventType =
-                    unitOfWork.saveEventType("Event Name", startTopicsID())
-
-            eventType.name shouldBe "Event Name"
-            eventType.topicID shouldBe startTopicsID()
-        }
     }
 
 
@@ -133,10 +93,6 @@ abstract class RepositoryTest : StringSpec() {
         unitOfWork.saveEvent("CustomerAdded", customerAddedEvent("Han Solo"))
         unitOfWork.saveEvent("CustomerAdded", customerAddedEvent("Ben Solo"))
         unitOfWork.saveEvent("CustomerAdded", customerAddedEvent("Leia Organa"))
-
-        unitOfWork.saveTopic("Topic 1")
-        unitOfWork.saveTopic("Topic 2")
-        unitOfWork.saveTopic("Topic 3")
     }
 }
 

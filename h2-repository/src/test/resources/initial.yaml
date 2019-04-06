@@ -13,19 +13,3 @@
       when: 'timestamp not null'
       name: 'varchar(20) not null'
       content: 'text not null'
-
-- jdbc-create-table:
-    name: topic
-    fields:
-      id: 'bigint not null primary key auto_increment'
-      name: 'varchar(20) not null'
-
-- jdbc-create-table:
-    name: eventtype
-    fields:
-      id: 'bigint not null primary key auto_increment'
-      name: 'varchar(20) not null'
-      topicid: 'bigint not null'
-
-- jdbc-sql:
-    - alter table eventtype add foreign key (topicid) references topic(id)

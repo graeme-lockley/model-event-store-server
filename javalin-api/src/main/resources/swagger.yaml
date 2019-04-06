@@ -6,15 +6,12 @@ info:
 
     * The event store support topics where events are associated with a specific topic
 
-    * Each event can have different versions where each version will define what aggregate roots are associated with it
-
     * The event content is not defined other than being an arbitrary string.
   version: 1.0.0
 servers:
   - url: 'http://localhost:8080/api'
 tags:
   - name: events
-  - name: topics
 paths:
   /events:
     get:
@@ -90,80 +87,6 @@ paths:
           description: successful operation
           content: {}
 
-  /topics:
-    get:
-      tags:
-        - topics
-      summary: Sequence of all topics in the order
-      operationId: getTopics
-      parameters:
-        - name: from
-          in: query
-          schema:
-            type: integer
-            format: int32
-          description: >-
-            An optional value denoting the start of the topics to be retrieved.
-            Note that the first topic returned id will be the next topic
-            immediately following this ID.
-        - name: pagesize
-          in: query
-          schema:
-            type: integer
-            format: int32
-            default: 100
-          description: >-
-            Used for pagination.  A server might choose to place an upper bound
-            on this value.
-      responses:
-        '200':
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Topic'
-    post:
-      tags:
-        - topics
-      summary: Add a new topic
-      operationId: saveTopic
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/NewTopic'
-        required: false
-      responses:
-        '200':
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Topic'
-
-  '/topics/{id}':
-    get:
-      tags:
-        - topics
-      summary: Detail associated with a specific topic
-      operationId: getTopic
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int32
-      responses:
-        '412':
-          description: no topic associated with the passed ID
-          content: {}
-        default:
-          description: successful operation
-          content: {}
-
 components:
   schemas:
     Event:
@@ -206,20 +129,3 @@ components:
         content:
           type: string
           description: 'The content can be anything - JSON, XML or anything that is relevant'
-    Topic:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-          description: |
-            An ID that uniquely determines a specific topic
-        name:
-          type: string
-          description: The topic's name
-    NewTopic:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The topic's name

@@ -2,8 +2,6 @@ package za.co.no9.mes.adaptors.repository
 
 import org.jdbi.v3.core.Jdbi
 import za.co.no9.mes.domain.Event
-import za.co.no9.mes.domain.Topic
-import za.co.no9.mes.domain.ports.EventTypeDTO
 import java.sql.Timestamp
 import java.time.Instant
 import java.util.*
@@ -54,53 +52,4 @@ class H2UnitOfWork(private val jdbi: Jdbi) : za.co.no9.mes.domain.ports.UnitOfWo
                         .findFirst()
                         .orElse(Integer.MIN_VALUE)
             }
-
-
-    override fun saveTopic(topicName: String): Topic =
-            jdbi.withHandle<Topic, RuntimeException> { handle ->
-                handle.execute("insert into topic (name) values (?)", topicName)
-
-                handle
-                        .createQuery("select id, name from topic where id = SCOPE_IDENTITY()")
-                        .map { rs, _ -> Topic(rs.getInt("id"), rs.getString("name")) }
-                        .findOnly()
-            }
-
-
-    override fun topic(id: Int): Topic? =
-            jdbi.withHandle<Topic?, RuntimeException> { handle ->
-                handle.select("select id, name from topic where id = ?", id)
-                        .map { rs, _ -> Topic(rs.getInt("id"), rs.getString("name")) }
-                        .findFirst()
-                        .orElse(null)
-            }
-
-
-    override fun topics(from: Int?, pageSize: Int): Sequence<Topic> =
-            if (from == null) {
-                jdbi.withHandle<List<Topic>, RuntimeException> { handle ->
-                    handle.select("select id, name from topic order by id limit ?", pageSize)
-                            .map { rs, _ -> Topic(rs.getInt("id"), rs.getString("name")) }
-                            .list()
-                }
-
-            } else {
-                jdbi.withHandle<List<Topic>, RuntimeException> { handle ->
-                    handle.select("select id, name from topic where id > ? order by id limit ?", from, pageSize)
-                            .map { rs, _ -> Topic(rs.getInt("id"), rs.getString("name")) }
-                            .list()
-                }
-            }.asSequence()
-
-
-    override fun saveEventType(name: String, topicID: Int): EventTypeDTO =
-            jdbi.withHandle<EventTypeDTO, RuntimeException> { handle ->
-                handle.execute("insert into eventtype (name, topicID) values (?, ?)", name, topicID)
-
-                handle
-                        .createQuery("select id, name, topicID from eventtype where id = SCOPE_IDENTITY()")
-                        .map { rs, _ -> EventTypeDTO(rs.getInt("id"), rs.getString("name"), rs.getInt("topicID")) }
-                        .findOnly()
-            }
-
 }
