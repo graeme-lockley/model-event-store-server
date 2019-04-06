@@ -61,13 +61,6 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>za.co.no9</groupId>
-            <artifactId>jfixtures</artifactId>
-            <version>${jfixtures.version}</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
