@@ -35,6 +35,7 @@
         <module>inmemory-repository</module>
         <module>javalin-api</module>
         <module>h2-repository</module>
+        <module>sqlserver-repository</module>
         <module>h2-javalin-application</module>
         <module>ui-demo</module>
     </modules>
