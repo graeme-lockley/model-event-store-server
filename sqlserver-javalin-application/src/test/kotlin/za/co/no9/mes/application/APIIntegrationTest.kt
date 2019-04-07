@@ -14,7 +14,7 @@ class APIIntegrationTest : StringSpec({
             "http://localhost:$DEFAULT_PORT/api/"
 
 
-    "known event" {
+    "!known event" {
         val response =
                 Request.Get(baseURI + "events/2").execute().returnContent().asString()
 
@@ -26,7 +26,7 @@ class APIIntegrationTest : StringSpec({
     }
 
 
-    "unknown event" {
+    "!unknown event" {
         val response =
                 Request.Get(baseURI + "events/-2").execute()
 
