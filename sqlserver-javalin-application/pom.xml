@@ -72,7 +72,7 @@
                 </executions>
                 <configuration>
                     <systemPropertyVariables>
-                        <it-database.port>${it-database.port}</it-database.port>
+                        <it-app-database.port>${it-app-database.port}</it-app-database.port>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
@@ -99,7 +99,7 @@
                                             <SA_PASSWORD>Sa345678</SA_PASSWORD>
                                         </env>
                                         <ports>
-                                            <port>it-database.port:1433</port>
+                                            <port>it-app-database.port:1433</port>
                                         </ports>
                                         <wait>
                                             <log>SQL Server is now ready for client connections.</log>

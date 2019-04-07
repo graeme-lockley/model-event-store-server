@@ -40,7 +40,7 @@ class APIIntegrationTest : StringSpec({
         super.beforeTest(testCase)
 
         val jdbcURL =
-                "jdbc:sqlserver://localhost:" + (System.getProperty("it-database.port") ?: "1433")
+                "jdbc:sqlserver://localhost:" + (System.getProperty("it-app-database.port") ?: "1433")
 
         server = Main(DEFAULT_PORT, jdbcURL, DEFAULT_JDBC_USER, DEFAULT_JDBC_PASS)
     }
